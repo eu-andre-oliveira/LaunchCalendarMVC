@@ -93,6 +93,7 @@ namespace LaunchCalendar.WebApp.Controllers
             {
                 movie.FilmeId = Movies.Count + 1;
                 Movies.Add(movie);
+
                 return RedirectToAction("CadastrarFilme");
             }
             return View(movie);
