@@ -1,0 +1,33 @@
+@model LaunchCalendar.Domain.Entities.Serie
+
+@{
+    ViewData["Title"] = "Cadastrar Série";
+}
+
+<div class="centered-form-wrapper">
+    <div class="form-container">
+        <h2>Cadastrar Série</h2>
+        <form asp-action="CadastrarSerie" method="post">
+            <div class="form-group">
+                <label asp-for="Titulo"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Genero"></label>
+                <input asp-for="Genero" class="form-control" />
+                <span asp-validation-for="Genero" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QtdeTemporadas"></label>
+                <input asp-for="QtdeTemporadas" class="form-control" type="number" min="1" />
+                <span asp-validation-for="QtdeTemporadas" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

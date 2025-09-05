@@ -1,0 +1,38 @@
+@model LaunchCalendar.Domain.Entities.Filme
+
+@{
+    ViewData["Title"] = "Cadastrar Filme";
+}
+
+<div class="centered-form-wrapper">
+    <div class="form-container">
+        <h2>Cadastrar Filme</h2>
+        <form asp-action="CadastrarFilme" method="post">
+            <div class="form-group">
+                <label asp-for="Titulo"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Genero"></label>
+                <input asp-for="Genero" class="form-control" />
+                <span asp-validation-for="Genero" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataLancamento"></label>
+                <input asp-for="DataLancamento" class="form-control" type="date" />
+                <span asp-validation-for="DataLancamento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImagemExibicao"></label>
+                <input asp-for="ImagemExibicao" class="form-control" />
+                <span asp-validation-for="ImagemExibicao" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,60 @@
+@model LaunchCalendar.Domain.Entities.Episodio
+
+@{
+    ViewData["Title"] = "Cadastrar Episódio";
+    var seriesList = ViewBag.SeriesList as List<LaunchCalendar.Domain.Entities.Serie>;
+}
+
+<link rel="stylesheet" href="~/css/custom-theme.css" asp-append-version="true" />
+
+<div class="centered-form-wrapper">
+    <div class="form-container">
+        <h2>Cadastrar Episódio</h2>
+        <form asp-action="CadastrarEpisodio" method="post">
+            <div class="form-group">
+                <label asp-for="Titulo"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Numero"></label>
+                <input asp-for="Numero" class="form-control" type="number" min="1" />
+                <span asp-validation-for="Numero" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Temporada"></label>
+                <input asp-for="Temporada" class="form-control" type="number" min="1" />
+                <span asp-validation-for="Temporada" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SerieId">Série</label>
+                <select asp-for="SerieId" class="form-control">
+                    <option value="">Selecione uma série</option>
+                    @if (seriesList != null)
+                    {
+                        foreach (var serie in seriesList)
+                        {
+                            <option value="@serie.SerieId">@serie.Titulo</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="SerieId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataLancamento"></label>
+                <input asp-for="DataLancamento" class="form-control" type="date" />
+                <span asp-validation-for="DataLancamento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImagemExibicao"></label>
+                <input asp-for="ImagemExibicao" class="form-control" />
+                <span asp-validation-for="ImagemExibicao" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
