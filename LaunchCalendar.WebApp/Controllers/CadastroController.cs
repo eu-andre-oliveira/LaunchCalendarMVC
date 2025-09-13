@@ -1,3 +1,5 @@
+using LaunchCalendar.Application.Queries.Filmes; // ajuste o namespace se necessário
+using LaunchCalendar.Application.UseCases.CadastrarFilme;
 using LaunchCalendar.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,8 +12,13 @@ namespace LaunchCalendar.WebApp.Controllers
         private static List<Serie> SeriesList = new();
         private static List<Episodio> Episodes = new();
         private static bool _mocked = false;
+        private readonly ICadastrarFilmeUseCase _cadastrarFilmeUseCase;
+        private readonly IFilmeQuery _filmeQuery;
 
-        public CadastroController()
+        public CadastroController(
+            ICadastrarFilmeUseCase cadastrarFilmeUseCase,
+            IFilmeQuery filmeQuery
+        )
         {
             if (!_mocked)
             {
@@ -80,6 +87,9 @@ namespace LaunchCalendar.WebApp.Controllers
 
                 _mocked = true;
             }
+
+            _cadastrarFilmeUseCase = cadastrarFilmeUseCase;
+            _filmeQuery = filmeQuery;
         }
 
         // Filmes
@@ -87,16 +97,22 @@ namespace LaunchCalendar.WebApp.Controllers
         public IActionResult CadastrarFilme() => View();
 
         [HttpPost]
-        public IActionResult CadastrarFilme(Filme movie)
+        public IActionResult CadastrarFilme(CadastrarFilmeInput movie)
         {
             if (ModelState.IsValid)
             {
-                movie.FilmeId = Movies.Count + 1;
-                Movies.Add(movie);
+                _cadastrarFilmeUseCase.Execute(movie);
 
                 return RedirectToAction("CadastrarFilme");
             }
             return View(movie);
+        }
+
+        [HttpGet]
+        public IActionResult ListarFilmes()
+        {
+            var filmes = _filmeQuery.ListarTodos();
+            return View(filmes);
         }
 
         // Séries

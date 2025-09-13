@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LaunchCalendar.WebApp.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/custom-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 <body>
     <header>
@@ -31,10 +32,32 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <div class="container-fluid">
+        <div class="d-flex" style="min-height: 70vh;">
+            <nav class="sidebar-menu">
+                <h4>Cadastros</h4>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" href="/Cadastro/ListarFilmes">
+                            <i class="bi bi-film"></i> Filmes
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" href="/Cadastro/ListarSeries">
+                            <i class="bi bi-collection-play"></i> Séries
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" href="/Cadastro/ListarEpisodios">
+                            <i class="bi bi-play-circle"></i> Episódios
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <main class="flex-grow-1 p-5">
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
     <footer class="border-top footer text-muted">
