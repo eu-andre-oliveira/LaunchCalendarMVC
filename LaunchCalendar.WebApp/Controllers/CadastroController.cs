@@ -1,5 +1,7 @@
 using LaunchCalendar.Application.Queries.Filmes; // ajuste o namespace se necessário
+using LaunchCalendar.Application.Queries.Series;
 using LaunchCalendar.Application.UseCases.CadastrarFilme;
+using LaunchCalendar.Application.UseCases.CadastrarSerie;
 using LaunchCalendar.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +16,14 @@ namespace LaunchCalendar.WebApp.Controllers
         private static bool _mocked = false;
         private readonly ICadastrarFilmeUseCase _cadastrarFilmeUseCase;
         private readonly IFilmeQuery _filmeQuery;
+        private readonly ISerieQuery _serieQuery;
+        private readonly ICadastrarSerieUseCase _cadastrarSerieUseCase;
 
         public CadastroController(
             ICadastrarFilmeUseCase cadastrarFilmeUseCase,
-            IFilmeQuery filmeQuery
-        )
+            IFilmeQuery filmeQuery,
+            ISerieQuery serieQuery,
+            ICadastrarSerieUseCase cadastrarSerieUseCase)
         {
             if (!_mocked)
             {
@@ -90,6 +95,8 @@ namespace LaunchCalendar.WebApp.Controllers
 
             _cadastrarFilmeUseCase = cadastrarFilmeUseCase;
             _filmeQuery = filmeQuery;
+            _serieQuery = serieQuery;
+            _cadastrarSerieUseCase = cadastrarSerieUseCase;
         }
 
         // Filmes
@@ -115,20 +122,26 @@ namespace LaunchCalendar.WebApp.Controllers
             return View(filmes);
         }
 
+        [HttpGet]
+        public IActionResult ListarSeries()
+        {
+            var series = _serieQuery.ListarTodos();
+            return View(series);
+        }
+
         // Séries
         [HttpGet]
         public IActionResult CadastrarSerie() => View();
 
         [HttpPost]
-        public IActionResult CadastrarSerie(Serie series)
+        public IActionResult CadastrarSerie(CadastrarSerieInput serie)
         {
             if (ModelState.IsValid)
             {
-                series.SerieId = SeriesList.Count + 1;
-                SeriesList.Add(series);
-                return RedirectToAction("CadastrarSerie");
+                _cadastrarSerieUseCase.Execute(serie);
+                return RedirectToAction("ListarSeries");
             }
-            return View(series);
+            return View(serie);
         }
 
         // Episódios
