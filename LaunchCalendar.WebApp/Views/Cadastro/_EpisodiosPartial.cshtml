@@ -1,0 +1,16 @@
+﻿@model IEnumerable<LaunchCalendar.Application.Queries.Episodios.EpisodiosQueryOutput>
+
+@if (Model.Any())
+{
+    <h3>Episódios</h3>
+    <ul>
+        @foreach (var episodio in Model)
+        {
+            @* <li>@episodio.Titulo</li> *@
+        }
+    </ul>
+}
+else
+{
+    <p>Nenhum episódio encontrado para esta série.</p>
+}

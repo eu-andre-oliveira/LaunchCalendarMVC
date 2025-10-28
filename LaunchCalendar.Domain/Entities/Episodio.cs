@@ -7,7 +7,7 @@ namespace LaunchCalendar.Domain.Entities
         public string ImagemExibicao { get; set; }
         public int Numero { get; set; }
         public int Temporada { get; set; }
-        public Serie Serie { get; set; }
+        public Serie? Serie { get; set; }
         public int SerieId { get; set; }
         public DateTime DataLancamento { get; set; }
     }

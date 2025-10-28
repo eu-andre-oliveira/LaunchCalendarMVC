@@ -98,6 +98,19 @@ namespace LaunchCalendar.WebApp.Controllers
             _serieQuery = serieQuery;
             _cadastrarSerieUseCase = cadastrarSerieUseCase;
         }
+        public IActionResult ListarEpisodios()
+        {
+            IEnumerable<SerieQueryOutput> series = _serieQuery.ListarTodos();
+            ViewBag.Series = series; // Passa as séries para a view
+            return View();
+        }
+
+        //[HttpPost]
+        //public IActionResult ListarEpisodios(int serieId)
+        //{
+        //    var episodios = _episodiosRepository.GetAll().Where(e => e.SerieId == serieId).ToList();
+        //    return PartialView("_EpisodiosPartial", episodios); // Retorna uma partial view com os episódios
+        //}
 
         // Filmes
         [HttpGet]

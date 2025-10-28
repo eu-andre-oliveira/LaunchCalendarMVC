@@ -1,0 +1,41 @@
+﻿@model IEnumerable<LaunchCalendar.Domain.Entities.Episodio>
+
+@{
+    ViewData["Title"] = "Episódios";
+}
+
+<h2>Selecionar Série</h2>
+
+<form id="serieForm">
+    <select id="serieSelect" name="serieId">
+        <option value="">-- Selecione uma Série --</option>
+        @foreach (var serie in ViewBag.Series)
+        {
+            <option value="@serie.Id">@serie.Titulo</option>
+        }
+    </select>
+    <button type="submit">Listar Episódios</button>
+</form>
+
+<div id="episodiosContainer">
+    <!-- Os episódios serão carregados aqui -->
+</div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#serieForm').submit(function (event) {
+                event.preventDefault(); // Impede o envio padrão do formulário
+                var serieId = $('#serieSelect').val();
+                if (serieId) {
+                    $.post('/Episodios/ListarEpisodios', { serieId: serieId }, function (data) {
+                        $('#episodiosContainer').html(data); // Carrega a resposta na div
+                    });
+                } else {
+                    $('#episodiosContainer').html(''); // Limpa a div se nenhum série for selecionada
+                }
+            });
+        });
+    </script>
+}
