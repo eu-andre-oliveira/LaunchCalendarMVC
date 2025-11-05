@@ -4,28 +4,27 @@
     ViewData["Title"] = "Listagem de Séries";
 }
 
-<div class="calendar-container" style="max-width: 900px; margin: 0 auto; padding: 32px;">
+<div class="calendar-container" style="max-width:900px; margin:0 auto; padding:24px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Listagem de Séries</h2>
-        <a href="/Cadastro/CadastrarSerie" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Nova Série
-        </a>
+        <a href="/Cadastro/CadastrarSerie" class="btn btn-primary">Novo Série</a>
     </div>
+
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>Título</th>
                 <th>Gênero</th>
-                <th>Qtd. Temporadas</th>
+                <th>Temporadas</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var serie in Model)
+            @foreach (var s in Model)
             {
                 <tr>
-                    <td>@serie.Titulo</td>
-                    <td>@serie.Genero</td>
-                    <td>@serie.QtdeTemporadas</td>
+                    <td>@s.Titulo</td>
+                    <td>@s.Genero</td>
+                    <td>@s.QtdeTemporadas</td>
                 </tr>
             }
         </tbody>

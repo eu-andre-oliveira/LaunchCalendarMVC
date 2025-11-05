@@ -1,41 +1,36 @@
-﻿@model IEnumerable<LaunchCalendar.Domain.Entities.Episodio>
+﻿@model IEnumerable<LaunchCalendar.Application.Queries.Episodios.EpisodiosQueryOutput>
 
 @{
-    ViewData["Title"] = "Episódios";
+    ViewData["Title"] = "Listagem de Episódios";
 }
 
-<h2>Selecionar Série</h2>
+<div class="calendar-container" style="max-width:900px; margin:0 auto; padding:24px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Listagem de Episódios</h2>
+        <a href="/Cadastro/CadastrarEpisodio" class="btn btn-primary">Novo Episódio</a>
+    </div>
 
-<form id="serieForm">
-    <select id="serieSelect" name="serieId">
-        <option value="">-- Selecione uma Série --</option>
-        @foreach (var serie in ViewBag.Series)
-        {
-            <option value="@serie.Id">@serie.Titulo</option>
-        }
-    </select>
-    <button type="submit">Listar Episódios</button>
-</form>
-
-<div id="episodiosContainer">
-    <!-- Os episódios serão carregados aqui -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Série</th>
+                <th>Temporada</th>
+                <th>Nº</th>
+                <th>Data Lançamento</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in Model)
+            {
+                <tr>
+                    <td>@e.Titulo</td>
+                    <td>@e.SerieId</td>
+                    <td>@e.Temporada</td>
+                    <td>@e.Numero</td>
+                    <td>@e.DataLancamento.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
-
-@section Scripts {
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#serieForm').submit(function (event) {
-                event.preventDefault(); // Impede o envio padrão do formulário
-                var serieId = $('#serieSelect').val();
-                if (serieId) {
-                    $.post('/Episodios/ListarEpisodios', { serieId: serieId }, function (data) {
-                        $('#episodiosContainer').html(data); // Carrega a resposta na div
-                    });
-                } else {
-                    $('#episodiosContainer').html(''); // Limpa a div se nenhum série for selecionada
-                }
-            });
-        });
-    </script>
-}

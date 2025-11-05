@@ -1,0 +1,78 @@
+@{
+    // Same ViewBag names used by the original action
+    var inicioSemana = (DateTime)ViewBag.InicioSemana;
+    var filmes = ViewBag.Filmes as List<LaunchCalendar.Domain.Entities.Filme>;
+    var episodios = ViewBag.Episodios as List<LaunchCalendar.Domain.Entities.Episodio>;
+    var series = ViewBag.SeriesList as List<LaunchCalendar.Domain.Entities.Serie>;
+    string[] diasSemana = new[] { "SEG", "TER", "QUA", "QUI", "SEX", "SÁB", "DOM" };
+}
+
+<div class="calendar-container">
+    <header class="calendar-header">
+        <div class="title">
+            <svg viewBox="0 0 24 24"><path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 1h4v2h-4zm6 0h4v4h-4z"></path></svg>
+            <span>CALENDÁRIO DE LANÇAMENTOS</span>
+        </div>
+        <div class="season">
+            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM5 8V6h14v2H5z"></path></svg>
+            <span>PROGRAMAÇÃO DE VERÃO 2025</span>
+        </div>
+    </header>
+
+    <div class="schedule-grid-wrapper">
+        <button class="nav-arrow left-arrow" aria-label="Semana anterior" style="display:none;">
+            <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
+        </button>
+
+        <main class="schedule-grid">
+            @for (int i = 0; i < 7; i++)
+            {
+                var dia = inicioSemana.AddDays(i).Date;
+                <div class="day-column">
+                    <header class="day-header">
+                        <div class="date">@dia.ToString("dd/MM")</div>
+                        <div class="day-name">@diasSemana[i]</div>
+                    </header>
+                    <ul class="schedule-list">
+                        @* Filmes *@
+                        @if (filmes != null)
+                        {
+                            foreach (var filme in filmes.Where(f => f.DataLancamento.Date == dia))
+                            {
+                                <li class="schedule-item">
+                                    <div class="timeline"></div>
+                                    <div class="item-content">
+                                        <div class="time">@filme.DataLancamento.ToString("HH:mm")</div>
+                                        <div class="title">@filme.Titulo</div>
+                                        <div class="subtitle">Filme - @filme.Genero</div>
+                                    </div>
+                                </li>
+                            }
+                        }
+
+                        @* Episódios *@
+                        @if (episodios != null)
+                        {
+                            foreach (var ep in episodios.Where(e => e.DataLancamento.Date == dia))
+                            {
+                                var serieNome = ep.Serie?.Titulo ?? (series?.FirstOrDefault(s => s.SerieId == ep.SerieId)?.Titulo ?? "Série");
+                                <li class="schedule-item">
+                                    <div class="timeline"></div>
+                                    <div class="item-content">
+                                        <div class="time">@ep.DataLancamento.ToString("HH:mm")</div>
+                                        <div class="title">@serieNome</div>
+                                        <div class="subtitle">Ep. @ep.Numero - @ep.Titulo</div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            }
+        </main>
+
+        <button class="nav-arrow right-arrow" aria-label="Próxima semana" style="display:none;">
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"></path></svg>
+        </button>
+    </div>
+</div>

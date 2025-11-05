@@ -15,7 +15,8 @@ namespace LaunchCalendar.WebApp.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            // redireciona diretamente para o calendário (tela inicial será o calendário)
+            return RedirectToAction("CalendarioSemanal", "Cadastro");
         }
 
         public IActionResult Privacy()

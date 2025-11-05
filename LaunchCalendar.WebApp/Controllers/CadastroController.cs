@@ -1,116 +1,39 @@
-using LaunchCalendar.Application.Queries.Filmes; // ajuste o namespace se necessário
+using LaunchCalendar.Application.Queries.Filmes;
+using LaunchCalendar.Application.Queries.Episodios;
 using LaunchCalendar.Application.Queries.Series;
 using LaunchCalendar.Application.UseCases.CadastrarFilme;
 using LaunchCalendar.Application.UseCases.CadastrarSerie;
+using LaunchCalendar.Application.UseCases.CadastrarEpisodios;
 using LaunchCalendar.Domain.Entities;
+using LaunchCalendar.WebApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LaunchCalendar.WebApp.Controllers
 {
     public class CadastroController : Controller
     {
-        // Exemplo: listas em memória (substitua por acesso ao banco de dados conforme necessário)
-        private static List<Filme> Movies = new();
-        private static List<Serie> SeriesList = new();
-        private static List<Episodio> Episodes = new();
-        private static bool _mocked = false;
         private readonly ICadastrarFilmeUseCase _cadastrarFilmeUseCase;
-        private readonly IFilmeQuery _filmeQuery;
-        private readonly ISerieQuery _serieQuery;
         private readonly ICadastrarSerieUseCase _cadastrarSerieUseCase;
+        private readonly ICadastrarEpisodioUseCase _cadastrarEpisodioUseCase;
+        private readonly IFilmeQuery _filmeQuery;
+        private readonly IEpisodiosQuery _episodiosQuery;
+        private readonly ISerieQuery _serieQuery;
 
         public CadastroController(
             ICadastrarFilmeUseCase cadastrarFilmeUseCase,
+            ICadastrarSerieUseCase cadastrarSerieUseCase,
+            ICadastrarEpisodioUseCase cadastrarEpisodioUseCase,
             IFilmeQuery filmeQuery,
-            ISerieQuery serieQuery,
-            ICadastrarSerieUseCase cadastrarSerieUseCase)
+            IEpisodiosQuery episodiosQuery,
+            ISerieQuery serieQuery)
         {
-            if (!_mocked)
-            {
-                // Calcula o início da semana (segunda-feira)
-                var hoje = DateTime.Today;
-                int diff = hoje.DayOfWeek == DayOfWeek.Sunday
-                    ? -6
-                    : DayOfWeek.Monday - hoje.DayOfWeek;
-                var inicioSemana = hoje.AddDays(diff);
-
-                // Mock de séries
-                var serie1 = new Serie { SerieId = 1, Titulo = "Série A", Genero = "Drama", Episodios = new List<Episodio>() };
-                var serie2 = new Serie { SerieId = 2, Titulo = "Série B", Genero = "Comédia", Episodios = new List<Episodio>() };
-                SeriesList.AddRange(new[] { serie1, serie2 });
-
-                // Mock de filmes (um na terça, outro no sábado da semana exibida)
-                Movies.Add(new Filme
-                {
-                    FilmeId = 1,
-                    Titulo = "Filme X",
-                    Genero = "Ação",
-                    DataLancamento = inicioSemana.AddDays(1) // Terça-feira
-                });
-                Movies.Add(new Filme
-                {
-                    FilmeId = 2,
-                    Titulo = "Filme Y",
-                    Genero = "Ficção",
-                    DataLancamento = inicioSemana.AddDays(5) // Sábado
-                });
-
-                // Mock de episódios (distribuídos na semana)
-                var ep1 = new Episodio
-                {
-                    EpisodioId = 1,
-                    Titulo = "O Início",
-                    Numero = 1,
-                    Serie = serie1,
-                    SerieId = serie1.SerieId,
-                    DataLancamento = inicioSemana // Segunda-feira
-                };
-                var ep2 = new Episodio
-                {
-                    EpisodioId = 2,
-                    Titulo = "A Reviravolta",
-                    Numero = 2,
-                    Serie = serie1,
-                    SerieId = serie1.SerieId,
-                    DataLancamento = inicioSemana.AddDays(3) // Quinta-feira
-                };
-                var ep3 = new Episodio
-                {
-                    EpisodioId = 3,
-                    Titulo = "O Final",
-                    Numero = 1,
-                    Serie = serie2,
-                    SerieId = serie2.SerieId,
-                    DataLancamento = inicioSemana.AddDays(6) // Domingo
-                };
-                Episodes.AddRange(new[] { ep1, ep2, ep3 });
-
-                // Relacionar episódios às séries
-                serie1.Episodios.Add(ep1);
-                serie1.Episodios.Add(ep2);
-                serie2.Episodios.Add(ep3);
-
-                _mocked = true;
-            }
-
             _cadastrarFilmeUseCase = cadastrarFilmeUseCase;
-            _filmeQuery = filmeQuery;
-            _serieQuery = serieQuery;
             _cadastrarSerieUseCase = cadastrarSerieUseCase;
+            _cadastrarEpisodioUseCase = cadastrarEpisodioUseCase;
+            _filmeQuery = filmeQuery;
+            _episodiosQuery = episodiosQuery;
+            _serieQuery = serieQuery;
         }
-        public IActionResult ListarEpisodios()
-        {
-            IEnumerable<SerieQueryOutput> series = _serieQuery.ListarTodos();
-            ViewBag.Series = series; // Passa as séries para a view
-            return View();
-        }
-
-        //[HttpPost]
-        //public IActionResult ListarEpisodios(int serieId)
-        //{
-        //    var episodios = _episodiosRepository.GetAll().Where(e => e.SerieId == serieId).ToList();
-        //    return PartialView("_EpisodiosPartial", episodios); // Retorna uma partial view com os episódios
-        //}
 
         // Filmes
         [HttpGet]
@@ -122,12 +45,50 @@ namespace LaunchCalendar.WebApp.Controllers
             if (ModelState.IsValid)
             {
                 _cadastrarFilmeUseCase.Execute(movie);
-
                 return RedirectToAction("CadastrarFilme");
             }
             return View(movie);
         }
 
+        // Séries
+        [HttpGet]
+        public IActionResult CadastrarSerie() => View();
+
+        [HttpPost]
+        public IActionResult CadastrarSerie(LaunchCalendar.Application.UseCases.CadastrarSerie.CadastrarSerieInput input)
+        {
+            if (ModelState.IsValid)
+            {
+                _cadastrarSerieUseCase.Execute(input);
+                return RedirectToAction("CadastrarSerie");
+            }
+            return View(input);
+        }
+
+        // Episódios
+        [HttpGet]
+        public IActionResult CadastrarEpisodio()
+        {
+            // populate series list for the select
+            ViewBag.SeriesList = _serieQuery.ListarTodos();
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CadastrarEpisodio(LaunchCalendar.Application.UseCases.CadastrarEpisodios.CadastrarEpisodioInput input)
+        {
+            if (ModelState.IsValid)
+            {
+                _cadastrarEpisodioUseCase.Execute(input);
+                return RedirectToAction("CadastrarEpisodio");
+            }
+
+            // repopulate series list when returning the view with validation errors
+            ViewBag.SeriesList = _serieQuery.ListarTodos();
+            return View(input);
+        }
+
+        // List pages
         [HttpGet]
         public IActionResult ListarFilmes()
         {
@@ -142,57 +103,45 @@ namespace LaunchCalendar.WebApp.Controllers
             return View(series);
         }
 
-        // Séries
         [HttpGet]
-        public IActionResult CadastrarSerie() => View();
-
-        [HttpPost]
-        public IActionResult CadastrarSerie(CadastrarSerieInput serie)
+        public IActionResult ListarEpisodios()
         {
-            if (ModelState.IsValid)
-            {
-                _cadastrarSerieUseCase.Execute(serie);
-                return RedirectToAction("ListarSeries");
-            }
-            return View(serie);
+            var episodios = _episodiosQuery.ListarComFiltro(new LaunchCalendar.Application.Queries.Episodios.EpisodiosFilterInput());
+            return View(episodios);
         }
 
-        // Episódios
-        [HttpGet]
-        public IActionResult CadastrarEpisodio() => View();
-
-        [HttpPost]
-        public IActionResult CadastrarEpisodio(Episodio episode)
-        {
-            if (ModelState.IsValid)
-            {
-                episode.EpisodioId = Episodes.Count + 1;
-                Episodes.Add(episode);
-                return RedirectToAction("CadastrarEpisodio");
-            }
-            return View(episode);
-        }
-
+        // Calendário semanal
         [HttpGet]
         public IActionResult CalendarioSemanal()
         {
-            ViewData["Title"] = null;
-
-            // Garante que o calendário sempre inclua o dia de hoje (segunda a domingo)
             var hoje = DateTime.Today;
-            int diff = hoje.DayOfWeek == DayOfWeek.Sunday
-                ? -6
-                : DayOfWeek.Monday - hoje.DayOfWeek;
+            int diff = hoje.DayOfWeek == DayOfWeek.Sunday ? -6 : DayOfWeek.Monday - hoje.DayOfWeek;
             var inicioSemana = hoje.AddDays(diff);
             var fimSemana = inicioSemana.AddDays(6);
 
-            var filmesSemana = Movies.Where(m => m.DataLancamento >= inicioSemana && m.DataLancamento <= fimSemana).ToList();
-            var episodiosSemana = Episodes.Where(e => e.DataLancamento >= inicioSemana && e.DataLancamento <= fimSemana).ToList();
+            var filmes = _filmeQuery.ListarComFiltro(new LaunchCalendar.Application.Queries.Filmes.FilmeFilterInput
+            {
+                DataLancamentoInicio = inicioSemana,
+                DataLancamentoFim = fimSemana
+            });
 
-            ViewBag.InicioSemana = inicioSemana;
-            ViewBag.Filmes = filmesSemana;
-            ViewBag.Episodios = episodiosSemana;
-            return View();
+            var episodios = _episodiosQuery.ListarComFiltro(new LaunchCalendar.Application.Queries.Episodios.EpisodiosFilterInput
+            {
+                DataLancamentoInicio = inicioSemana,
+                DataLancamentoFim = fimSemana
+            });
+
+            var series = _serieQuery.ListarTodos();
+
+            var vm = new CalendarioViewModel
+            {
+                InicioSemana = inicioSemana,
+                Filmes = filmes,
+                Episodios = episodios,
+                Series = series
+            };
+
+            return View(vm);
         }
     }
 }

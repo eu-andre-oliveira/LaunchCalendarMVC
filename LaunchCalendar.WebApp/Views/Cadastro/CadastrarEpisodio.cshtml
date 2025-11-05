@@ -1,28 +1,27 @@
-@model LaunchCalendar.Domain.Entities.Episodio
+@model LaunchCalendar.Application.UseCases.CadastrarEpisodios.CadastrarEpisodioInput
 
 @{
     ViewData["Title"] = "Cadastrar Episódio";
-    var seriesList = ViewBag.SeriesList as List<LaunchCalendar.Domain.Entities.Serie>;
+    var seriesList = ViewBag.SeriesList as IEnumerable<LaunchCalendar.Application.Queries.Series.SerieQueryOutput>;
 }
 
-<link rel="stylesheet" href="~/css/custom-theme.css" asp-append-version="true" />
+<h2 class="text-center mb-4">Cadastrar Episódio</h2>
 
 <div class="centered-form-wrapper">
     <div class="form-container">
-        <h2>Cadastrar Episódio</h2>
         <form asp-action="CadastrarEpisodio" method="post">
             <div class="form-group">
-                <label asp-for="Titulo"></label>
+                <label asp-for="Titulo">Nome do Episódio</label>
                 <input asp-for="Titulo" class="form-control" />
                 <span asp-validation-for="Titulo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Numero"></label>
+                <label asp-for="Numero">Número</label>
                 <input asp-for="Numero" class="form-control" type="number" min="1" />
                 <span asp-validation-for="Numero" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Temporada"></label>
+                <label asp-for="Temporada">Temporada</label>
                 <input asp-for="Temporada" class="form-control" type="number" min="1" />
                 <span asp-validation-for="Temporada" class="text-danger"></span>
             </div>
@@ -41,16 +40,16 @@
                 <span asp-validation-for="SerieId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DataLancamento"></label>
+                <label asp-for="DataLancamento">Data de Lançamento</label>
                 <input asp-for="DataLancamento" class="form-control" type="date" />
                 <span asp-validation-for="DataLancamento" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImagemExibicao"></label>
+                <label asp-for="ImagemExibicao">Imagem (URL)</label>
                 <input asp-for="ImagemExibicao" class="form-control" />
                 <span asp-validation-for="ImagemExibicao" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="submit" class="btn btn-primary w-100 mt-3">Salvar</button>
         </form>
     </div>
 </div>

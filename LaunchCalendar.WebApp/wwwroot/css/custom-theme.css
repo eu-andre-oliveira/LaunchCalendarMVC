@@ -164,3 +164,96 @@ button.btn-primary:focus {
     margin-bottom: 0;
     box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
+
+/* --- Calendar layout fixes (prevent global rules from breaking layout) --- */
+
+/* Ensure calendar container layout and width */
+.calendar-container {
+    max-width: 1100px;
+    margin: 24px auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+    padding: 0; /* internal blocks handle padding */
+}
+
+/* Header */
+.calendar-header {
+    padding: 16px 24px;
+    background-color: #F58220;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Force small SVG icons inside calendar header and controls */
+.calendar-container svg,
+.calendar-container img {
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+}
+
+/* Restrict svg sizes used as UI icons inside the calendar */
+.calendar-header svg,
+.calendar-header .title svg,
+.nav-arrow svg {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+/* Grid wrapper and arrows */
+.schedule-grid-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    gap: 12px;
+}
+
+/* Make schedule grid visible and enforce columns */
+.schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    width: 100%;
+    padding: 8px 0 24px 0;
+}
+
+/* Day column and header */
+.day-column {
+    background: transparent;
+    min-width: 140px;
+    padding: 0 8px;
+}
+
+.day-header {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+/* List items */
+.schedule-list { padding: 0; margin: 0; list-style: none; }
+.schedule-item { display: flex; gap: 8px; padding: 8px 0; align-items: flex-start; }
+
+/* Timeline visual */
+.timeline { width: 18px; flex-shrink: 0; position: relative; }
+.timeline::before { left: 6px; }
+
+/* Constrain images used in items */
+.item-image img { max-width: 100%; height: auto; border-radius: 4px; }
+
+/* Ensure page-level SVG/font-size globals do not scale calendar content */
+.calendar-container * {
+    font-size: inherit;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .schedule-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 520px) {
+    .schedule-grid { grid-template-columns: repeat(1, 1fr); }
+}

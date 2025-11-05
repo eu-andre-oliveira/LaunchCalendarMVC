@@ -4,9 +4,10 @@
     ViewData["Title"] = "Cadastrar Série";
 }
 
+<h2 class="text-center mb-4">Cadastrar Série</h2>
+
 <div class="centered-form-wrapper">
     <div class="form-container">
-        <h2>Cadastrar Série</h2>
         <form asp-action="CadastrarSerie" method="post">
             <div class="form-group">
                 <label asp-for="Titulo"></label>
@@ -23,7 +24,7 @@
                 <input asp-for="QtdeTemporadas" class="form-control" type="number" min="1" />
                 <span asp-validation-for="QtdeTemporadas" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="submit" class="btn btn-primary w-100 mt-3">Salvar</button>
         </form>
     </div>
 </div>
