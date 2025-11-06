@@ -1,4 +1,7 @@
-﻿using LaunchCalendar.Domain.Abstractions.Repositories;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using LaunchCalendar.Domain.Abstractions.Repositories;
 
 namespace LaunchCalendar.Application.Queries.Episodios
 {
@@ -47,6 +50,7 @@ namespace LaunchCalendar.Application.Queries.Episodios
                     Numero = e.Numero,
                     Temporada = e.Temporada,
                     SerieId = e.SerieId,
+                    SerieTitulo = e.Serie != null ? e.Serie.Titulo : null, // preenche título da série
                     ImagemExibicao = e.ImagemExibicao,
                     DataLancamento = e.DataLancamento
                 })

@@ -188,21 +188,29 @@ button.btn-primary:focus {
     align-items: center;
 }
 
-/* Force small SVG icons inside calendar header and controls */
+/* Calendar-specific overrides to prevent global rules from breaking layout */
 .calendar-container svg,
 .calendar-container img {
-    max-width: 100%;
-    height: auto;
-    display: inline-block;
+    width: auto !important; /* prevent global svg { width:100% } */
+    height: auto !important;
+    max-width: 100% !important;
+    display: inline-block !important;
 }
 
-/* Restrict svg sizes used as UI icons inside the calendar */
+/* Force small icons inside the calendar header and nav arrows */
 .calendar-header svg,
 .calendar-header .title svg,
-.nav-arrow svg {
-    width: 20px;
-    height: 20px;
-    vertical-align: middle;
+.schedule-grid-wrapper .nav-arrow svg {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+/* Ensure calendar inner elements keep their intended spacing */
+.calendar-container .calendar-header,
+.calendar-container .schedule-grid-wrapper,
+.calendar-container .schedule-grid,
+.calendar-container .day-column {
+    box-sizing: border-box;
 }
 
 /* Grid wrapper and arrows */
@@ -245,10 +253,12 @@ button.btn-primary:focus {
 /* Constrain images used in items */
 .item-image img { max-width: 100%; height: auto; border-radius: 4px; }
 
-/* Ensure page-level SVG/font-size globals do not scale calendar content */
-.calendar-container * {
-    font-size: inherit;
+
+/* If site.css sets large base font on the page, enforce smaller base for calendar */
+.calendar-container {
+    font-size: 13px !important;
 }
+
 
 /* Responsive */
 @media (max-width: 900px) {
@@ -256,4 +266,203 @@ button.btn-primary:focus {
 }
 @media (max-width: 520px) {
     .schedule-grid { grid-template-columns: repeat(1, 1fr); }
+}
+
+/* Ensure prev/next arrows are visible and positioned over the calendar */
+.schedule-grid-wrapper {
+    position: relative; /* enable absolute positioning of arrows */
+}
+
+.nav-arrow,
+a.nav-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    cursor: pointer;
+    position: absolute;
+    top: 18px; /* align with calendar header area */
+    transform: translateY(0);
+    z-index: 20;
+    text-decoration: none;
+}
+
+    .nav-arrow:hover,
+    a.nav-arrow:hover {
+        background: #fff7f0;
+        border-color: rgba(0,0,0,0.12);
+    }
+
+.left-arrow {
+    left: 12px;
+}
+
+.right-arrow {
+    right: 12px;
+}
+
+.nav-arrow svg,
+a.nav-arrow svg {
+    width: 18px;
+    height: 18px;
+    fill: #F58220;
+}
+
+/* Small screens: move arrows closer to content and reduce size */
+@media (max-width: 900px) {
+    .nav-arrow,
+    a.nav-arrow {
+        width: 34px;
+        height: 34px;
+        top: 12px;
+    }
+
+    .left-arrow {
+        left: 6px;
+    }
+
+    .right-arrow {
+        right: 6px;
+    }
+}
+
+/* If calendar is embedded (iframe) ensure arrows are not clipped by overflow */
+.calendar-container, .schedule-grid-wrapper {
+    overflow: visible;
+}
+
+/* Calendar item card (overrides/additions) */
+.calendar-container {
+    font-size: 13px;
+}
+
+/* Card structure */
+.item-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #eef0f2;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 1px 4px rgba(16,24,40,0.04);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    box-sizing: border-box;
+}
+
+    .item-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(16,24,40,0.08);
+    }
+
+/* Card body (text) */
+.item-card-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.item-card .time {
+    font-size: 0.78rem;
+    color: #8a8a8a;
+    margin-bottom: 6px;
+}
+
+.item-card .title {
+    font-weight: 700;
+    font-size: 0.94rem;
+    color: #222;
+    line-height: 1.15;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-card .subtitle {
+    font-size: 0.82rem;
+    color: #6b6b6b;
+    line-height: 1.1;
+}
+
+/* Thumbnail */
+.item-image {
+    width: 74px;
+    height: 104px;
+    flex: 0 0 74px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .item-image img {
+        width: 74px;
+        height: 104px;
+        object-fit: cover;
+        border-radius: 6px;
+        display: block;
+        border: 1px solid #e6e6e6;
+    }
+
+/* No-image layout */
+.item-card.no-image {
+    padding-right: 12px;
+}
+
+/* Timeline adjustments so cards align */
+.schedule-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.timeline {
+    width: 18px;
+    flex-shrink: 0;
+    position: relative;
+}
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 6px;
+        left: 8px;
+        width: 2px;
+        height: calc(100% - 6px);
+        background-color: #e6e6e6;
+    }
+
+    .timeline::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 5px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #cfcfcf;
+    }
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+    .item-image {
+        width: 64px;
+        height: 90px;
+    }
+
+        .item-image img {
+            width: 64px;
+            height: 90px;
+        }
+
+    .item-card .title {
+        font-size: 0.9rem;
+        white-space: normal;
+    }
 }

@@ -7,6 +7,7 @@ using LaunchCalendar.Application.UseCases.CadastrarEpisodios;
 using LaunchCalendar.Domain.Entities;
 using LaunchCalendar.WebApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization; // added
 
 namespace LaunchCalendar.WebApp.Controllers
 {
@@ -21,15 +22,11 @@ namespace LaunchCalendar.WebApp.Controllers
 
         public CadastroController(
             ICadastrarFilmeUseCase cadastrarFilmeUseCase,
-            ICadastrarSerieUseCase cadastrarSerieUseCase,
-            ICadastrarEpisodioUseCase cadastrarEpisodioUseCase,
             IFilmeQuery filmeQuery,
             IEpisodiosQuery episodiosQuery,
             ISerieQuery serieQuery)
         {
             _cadastrarFilmeUseCase = cadastrarFilmeUseCase;
-            _cadastrarSerieUseCase = cadastrarSerieUseCase;
-            _cadastrarEpisodioUseCase = cadastrarEpisodioUseCase;
             _filmeQuery = filmeQuery;
             _episodiosQuery = episodiosQuery;
             _serieQuery = serieQuery;
@@ -55,7 +52,7 @@ namespace LaunchCalendar.WebApp.Controllers
         public IActionResult CadastrarSerie() => View();
 
         [HttpPost]
-        public IActionResult CadastrarSerie(LaunchCalendar.Application.UseCases.CadastrarSerie.CadastrarSerieInput input)
+        public IActionResult CadastrarSerie(CadastrarSerieInput input)
         {
             if (ModelState.IsValid)
             {
@@ -75,7 +72,7 @@ namespace LaunchCalendar.WebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult CadastrarEpisodio(LaunchCalendar.Application.UseCases.CadastrarEpisodios.CadastrarEpisodioInput input)
+        public IActionResult CadastrarEpisodio(CadastrarEpisodioInput input)
         {
             if (ModelState.IsValid)
             {
@@ -106,19 +103,34 @@ namespace LaunchCalendar.WebApp.Controllers
         [HttpGet]
         public IActionResult ListarEpisodios()
         {
-            var episodios = _episodiosQuery.ListarComFiltro(new LaunchCalendar.Application.Queries.Episodios.EpisodiosFilterInput());
+            IEnumerable<EpisodiosQueryOutput> episodios = _episodiosQuery.ListarComFiltro(new EpisodiosFilterInput());
             return View(episodios);
         }
 
-        // Calendário semanal
+        // Calendário semanal - now accepts optional start (yyyy-MM-dd)
         [HttpGet]
-        public IActionResult CalendarioSemanal()
+        public IActionResult CalendarioSemanal(string? start = null)
         {
-            var hoje = DateTime.Today;
-            int diff = hoje.DayOfWeek == DayOfWeek.Sunday ? -6 : DayOfWeek.Monday - hoje.DayOfWeek;
-            var inicioSemana = hoje.AddDays(diff);
+            DateTime baseDate;
+
+            if (!string.IsNullOrEmpty(start)
+                && DateTime.TryParseExact(start, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed))
+            {
+                baseDate = parsed.Date;
+            }
+            else
+            {
+                baseDate = DateTime.Today;
+            }
+
+            // align baseDate to the Monday of its week
+            int diff = baseDate.DayOfWeek == DayOfWeek.Sunday
+                ? -6
+                : DayOfWeek.Monday - baseDate.DayOfWeek;
+            var inicioSemana = baseDate.AddDays(diff);
             var fimSemana = inicioSemana.AddDays(6);
 
+            // build filters for queries
             var filmes = _filmeQuery.ListarComFiltro(new LaunchCalendar.Application.Queries.Filmes.FilmeFilterInput
             {
                 DataLancamentoInicio = inicioSemana,

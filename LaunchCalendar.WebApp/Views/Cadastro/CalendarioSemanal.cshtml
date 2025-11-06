@@ -2,13 +2,14 @@
 
 @{
     ViewData["Title"] = "Calendário Semanal";
-
-    // Proteções caso o Model seja null
     var inicioSemana = Model?.InicioSemana ?? DateTime.Today;
     var filmes = Model?.Filmes ?? Enumerable.Empty<LaunchCalendar.Application.Queries.Filmes.FilmeQueryOutput>();
     var episodios = Model?.Episodios ?? Enumerable.Empty<LaunchCalendar.Application.Queries.Episodios.EpisodiosQueryOutput>();
     var series = Model?.Series ?? Enumerable.Empty<LaunchCalendar.Application.Queries.Series.SerieQueryOutput>();
     string[] diasSemana = new[] { "SEG", "TER", "QUA", "QUI", "SEX", "SÁB", "DOM" };
+
+    var prevStart = inicioSemana.AddDays(-7).ToString("yyyy-MM-dd");
+    var nextStart = inicioSemana.AddDays(7).ToString("yyyy-MM-dd");
 }
 
 <div class="calendar-container">
@@ -24,9 +25,10 @@
     </header>
 
     <div class="schedule-grid-wrapper">
-        <button class="nav-arrow left-arrow" aria-label="Semana anterior" title="Semana anterior">
+        <!-- previous week link -->
+        <a class="nav-arrow left-arrow" href="@Url.Action("CalendarioSemanal", "Cadastro", new { start = prevStart })" aria-label="Semana anterior" title="Semana anterior">
             <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
-        </button>
+        </a>
 
         <main class="schedule-grid" role="list">
             @for (int i = 0; i < 7; i++)
@@ -38,29 +40,51 @@
                         <div class="day-name">@diasSemana[i]</div>
                     </header>
                     <ul class="schedule-list">
-                        @* Filmes (usando DTO FilmeQueryOutput) *@
+                        @* Filmes *@
                         @foreach (var f in filmes.Where(f => f.DataLancamento.Date == dia))
                         {
+                            var hasImage = !string.IsNullOrWhiteSpace(f.ImagemExibicao);
                             <li class="schedule-item">
                                 <div class="timeline" aria-hidden="true"></div>
-                                <div class="item-content">
-                                    <div class="time">@f.DataLancamento.ToString("HH:mm")</div>
-                                    <div class="title">@f.Titulo</div>
-                                    <div class="subtitle">Filme - @f.Genero</div>
+
+                                <div class="item-card @(hasImage ? "" : "no-image")" role="article">
+                                    <div class="item-card-body">
+                                        <div class="time">@f.DataLancamento.ToString("HH:mm")</div>
+                                        <div class="title">@f.Titulo</div>
+                                        <div class="subtitle">Filme - @f.Genero</div>
+                                    </div>
+
+@*                                     @if (hasImage)
+                                    {
+                                        <div class="item-image">
+                                            <img src="@f.ImagemExibicao" alt="@f.Titulo" />
+                                        </div>
+                                    } *@
                                 </div>
                             </li>
                         }
 
-                        @* Episódios (usando DTO EpisodiosQueryOutput) *@
+                        @* Episódios *@
                         @foreach (var ep in episodios.Where(e => e.DataLancamento.Date == dia))
                         {
                             var serieNome = series.FirstOrDefault(s => s.SerieId == ep.SerieId)?.Titulo ?? "Série";
+                            var hasImageEp = !string.IsNullOrWhiteSpace(ep.ImagemExibicao);
                             <li class="schedule-item">
                                 <div class="timeline" aria-hidden="true"></div>
-                                <div class="item-content">
-                                    <div class="time">@ep.DataLancamento.ToString("HH:mm")</div>
-                                    <div class="title">@serieNome</div>
-                                    <div class="subtitle">Ep. @ep.Numero - @ep.Titulo</div>
+
+                                <div class="item-card @(hasImageEp ? "" : "no-image")" role="article">
+                                    <div class="item-card-body">
+                                        <div class="time">@ep.DataLancamento.ToString("HH:mm")</div>
+                                        <div class="title">@serieNome</div>
+                                        <div class="subtitle">Ep. @ep.Numero - @ep.Titulo</div>
+                                    </div>
+
+         @*                            @if (hasImageEp)
+                                    {
+                                        <div class="item-image">
+                                            <img src="@ep.ImagemExibicao" alt="@ep.Titulo" />
+                                        </div>
+                                    } *@
                                 </div>
                             </li>
                         }
@@ -69,8 +93,9 @@
             }
         </main>
 
-        <button class="nav-arrow right-arrow" aria-label="Próxima semana" title="Próxima semana">
+        <!-- next week link -->
+        <a class="nav-arrow right-arrow" href="@Url.Action("CalendarioSemanal", "Cadastro", new { start = nextStart })" aria-label="Próxima semana" title="Próxima semana">
             <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"></path></svg>
-        </button>
+        </a>
     </div>
 </div>
