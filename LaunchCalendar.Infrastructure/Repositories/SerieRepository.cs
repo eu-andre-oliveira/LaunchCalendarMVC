@@ -1,6 +1,7 @@
 ﻿using LaunchCalendar.Domain.Abstractions.Repositories;
 using LaunchCalendar.Domain.Entities;
 using LaunchCalendar.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace LaunchCalendar.Infrastructure.Repositories
 {
@@ -21,12 +22,18 @@ namespace LaunchCalendar.Infrastructure.Repositories
 
         public Serie? GetById(int id)
         {
-            return _context.Series.Find(id);
+            // include Episodios so detail projection works without extra includes
+            return _context.Series
+                .Include(s => s.Episodios)
+                .FirstOrDefault(s => s.SerieId == id);
         }
 
-        public IEnumerable<Serie> GetAll()
+        public IQueryable<Serie> GetAll()
         {
-            return _context.Series.ToList();
+            // return IQueryable with Episodes included so higher-level queries can project efficiently
+            return _context.Series
+                .Include(s => s.Episodios)
+                .AsQueryable();
         }
 
         public void Update(Serie serie)

@@ -1,13 +1,14 @@
-﻿using LaunchCalendar.Domain.Entities;
+﻿using System.Linq;
+using LaunchCalendar.Domain.Entities;
 
 namespace LaunchCalendar.Domain.Abstractions.Repositories
 {
     public interface ISerieRepository
     {
-        void Add(Serie filme);
+        void Add(Serie serie);
         Serie? GetById(int id);
-        IEnumerable<Serie> GetAll();
-        void Update(Serie filme);
+        IQueryable<Serie> GetAll();
+        void Update(Serie serie);
         void Delete(int id);
     }
 }

@@ -6,5 +6,8 @@ namespace LaunchCalendar.Application.Queries.Series
     {
         IEnumerable<SerieQueryOutput> ListarTodos();
         IEnumerable<SerieQueryOutput> ListarComFiltro(SerieFilterInput filter);
+
+        // Retorna detalhe de uma série (inclui episódios)
+        SerieDetailQueryOutput? ObterPorId(int id);
     }
 }

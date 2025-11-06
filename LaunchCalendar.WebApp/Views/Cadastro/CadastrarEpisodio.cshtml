@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Cadastrar Episódio";
     var seriesList = ViewBag.SeriesList as IEnumerable<LaunchCalendar.Application.Queries.Series.SerieQueryOutput>;
+    var selectedSerieId = Model?.SerieId ?? 0;
 }
 
 <h2 class="text-center mb-4">Cadastrar Episódio</h2>
@@ -33,7 +34,9 @@
                     {
                         foreach (var serie in seriesList)
                         {
-                            <option value="@serie.SerieId">@serie.Titulo</option>
+                            <option value="@serie.SerieId" selected="@(serie.SerieId == selectedSerieId)">
+                                @serie.Titulo
+                            </option>
                         }
                     }
                 </select>

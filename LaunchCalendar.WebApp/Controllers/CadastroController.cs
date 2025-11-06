@@ -7,7 +7,7 @@ using LaunchCalendar.Application.UseCases.CadastrarEpisodios;
 using LaunchCalendar.Domain.Entities;
 using LaunchCalendar.WebApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization; // added
+using System.Globalization;
 
 namespace LaunchCalendar.WebApp.Controllers
 {
@@ -22,11 +22,15 @@ namespace LaunchCalendar.WebApp.Controllers
 
         public CadastroController(
             ICadastrarFilmeUseCase cadastrarFilmeUseCase,
+            ICadastrarSerieUseCase cadastrarSerieUseCase,
+            ICadastrarEpisodioUseCase cadastrarEpisodioUseCase,
             IFilmeQuery filmeQuery,
             IEpisodiosQuery episodiosQuery,
             ISerieQuery serieQuery)
         {
             _cadastrarFilmeUseCase = cadastrarFilmeUseCase;
+            _cadastrarSerieUseCase = cadastrarSerieUseCase;
+            _cadastrarEpisodioUseCase = cadastrarEpisodioUseCase;
             _filmeQuery = filmeQuery;
             _episodiosQuery = episodiosQuery;
             _serieQuery = serieQuery;
@@ -62,12 +66,20 @@ namespace LaunchCalendar.WebApp.Controllers
             return View(input);
         }
 
-        // Episódios
+        // Episódios - GET now accepts optional serieId to preselect
         [HttpGet]
-        public IActionResult CadastrarEpisodio()
+        public IActionResult CadastrarEpisodio(int? serieId = null)
         {
             // populate series list for the select
             ViewBag.SeriesList = _serieQuery.ListarTodos();
+
+            if (serieId.HasValue)
+            {
+                // pass a model with SerieId preselected so the select is bound
+                var preModel = new CadastrarEpisodioInput { SerieId = serieId.Value, DataLancamento = DateTime.Today };
+                return View(preModel);
+            }
+
             return View();
         }
 
@@ -77,7 +89,9 @@ namespace LaunchCalendar.WebApp.Controllers
             if (ModelState.IsValid)
             {
                 _cadastrarEpisodioUseCase.Execute(input);
-                return RedirectToAction("CadastrarEpisodio");
+
+                // after successful creation redirect to the series detail page
+                return RedirectToAction("DetalharSerie", new { id = input.SerieId });
             }
 
             // repopulate series list when returning the view with validation errors
@@ -154,6 +168,15 @@ namespace LaunchCalendar.WebApp.Controllers
             };
 
             return View(vm);
+        }
+
+        [HttpGet]
+        public IActionResult DetalharSerie(int id)
+        {
+            var detalhe = _serieQuery.ObterPorId(id);
+            if (detalhe == null) return NotFound();
+
+            return View(detalhe);
         }
     }
 }

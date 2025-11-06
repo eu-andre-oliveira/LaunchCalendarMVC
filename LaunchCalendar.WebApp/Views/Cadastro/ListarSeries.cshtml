@@ -7,24 +7,34 @@
 <div class="calendar-container" style="max-width:900px; margin:0 auto; padding:24px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Listagem de Séries</h2>
-        <a href="/Cadastro/CadastrarSerie" class="btn btn-primary">Novo Série</a>
+        <a asp-controller="Cadastro" asp-action="CadastrarSerie" class="btn btn-primary">Nova Série</a>
     </div>
 
-    <table class="table table-striped">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th>Título</th>
                 <th>Gênero</th>
                 <th>Temporadas</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var s in Model)
             {
                 <tr>
-                    <td>@s.Titulo</td>
+                    <td>
+                        <a asp-controller="Cadastro" asp-action="DetalharSerie" asp-route-id="@s.SerieId" class="text-decoration-none">
+                            @s.Titulo
+                        </a>
+                    </td>
                     <td>@s.Genero</td>
                     <td>@s.QtdeTemporadas</td>
+                    <td class="text-end">
+                        <a asp-controller="Cadastro" asp-action="DetalharSerie" asp-route-id="@s.SerieId" class="btn btn-sm btn-outline-secondary">
+                            Detalhes
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>
