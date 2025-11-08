@@ -4,6 +4,7 @@ namespace LaunchCalendar.Domain.Entities
     {
         public int EpisodioId { get; set; }
         public string Titulo { get; set; }
+        public string? Descricao { get; set; }
         public string ImagemExibicao { get; set; }
         public int Numero { get; set; }
         public int Temporada { get; set; }

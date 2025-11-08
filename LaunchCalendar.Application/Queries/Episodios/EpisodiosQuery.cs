@@ -47,10 +47,11 @@ namespace LaunchCalendar.Application.Queries.Episodios
                 {
                     EpisodioId = e.EpisodioId,
                     Titulo = e.Titulo,
+                    Descricao = e.Descricao,
                     Numero = e.Numero,
                     Temporada = e.Temporada,
                     SerieId = e.SerieId,
-                    SerieTitulo = e.Serie != null ? e.Serie.Titulo : null, // preenche título da série
+                    SerieTitulo = e.Serie != null ? e.Serie.Titulo : null,
                     ImagemExibicao = e.ImagemExibicao,
                     DataLancamento = e.DataLancamento
                 })

@@ -17,11 +17,12 @@ namespace LaunchCalendar.Application.UseCases.CadastrarEpisodios
             var episodio = new Episodio
             {
                 Titulo = input.Titulo ?? string.Empty,
+                Descricao = input.Descricao,
                 Numero = input.Numero,
                 Temporada = input.Temporada,
                 SerieId = input.SerieId,
                 DataLancamento = input.DataLancamento,
-                ImagemExibicao = input.ImagemExibicao
+                ImagemExibicao = input.ImagemExibicao ?? string.Empty
             };
 
             _episodioRepository.Add(episodio);

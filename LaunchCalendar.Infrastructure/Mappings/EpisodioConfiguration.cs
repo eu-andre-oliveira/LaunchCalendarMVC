@@ -16,6 +16,9 @@ namespace LaunchCalendar.Infrastructure.Mappings
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.Property(e => e.Descricao)
+                .HasMaxLength(500);
+
             builder.Property(e => e.Numero)
                 .IsRequired();
 

@@ -49,7 +49,6 @@
 
                                 <div class="item-card @(hasImage ? "" : "no-image")" role="article">
                                     <div class="item-card-body">
-                                        <div class="time">@f.DataLancamento.ToString("HH:mm")</div>
                                         <div class="title">@f.Titulo</div>
                                         <div class="subtitle">Filme - @f.Genero</div>
                                     </div>
@@ -74,7 +73,6 @@
 
                                 <div class="item-card @(hasImageEp ? "" : "no-image")" role="article">
                                     <div class="item-card-body">
-                                        <div class="time">@ep.DataLancamento.ToString("HH:mm")</div>
                                         <div class="title">@serieNome</div>
                                         <div class="subtitle">Ep. @ep.Numero - @ep.Titulo</div>
                                     </div>
