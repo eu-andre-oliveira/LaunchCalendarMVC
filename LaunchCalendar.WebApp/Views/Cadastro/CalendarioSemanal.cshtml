@@ -71,7 +71,7 @@
                             <li class="schedule-item">
                                 <div class="timeline" aria-hidden="true"></div>
 
-                                <div class="item-card @(hasImageEp ? "" : "no-image")" role="article">
+                                <a href="@Url.Action("DetalharEpisodio", new { id = ep.EpisodioId })" class="item-card @(hasImageEp ? "" : "no-image")" role="article" style="text-decoration: none; color: inherit; cursor: pointer;">
                                     <div class="item-card-body">
                                         <div class="title">@serieNome</div>
                                         <div class="subtitle">Ep. @ep.Numero - @ep.Titulo</div>
@@ -83,7 +83,7 @@
                                             <img src="@ep.ImagemExibicao" alt="@ep.Titulo" />
                                         </div>
                                     } *@
-                                </div>
+                                </a>
                             </li>
                         }
                     </ul>

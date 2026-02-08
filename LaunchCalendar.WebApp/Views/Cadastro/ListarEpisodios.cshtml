@@ -18,17 +18,23 @@
                 <th>Temporada</th>
                 <th>Nº</th>
                 <th>Data Lançamento</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var e in Model)
             {
                 <tr>
-                    <td>@e.Titulo</td>
-                    <td>@e.SerieTitulo</td> @* exibe o nome da série *@
+                    <td>
+                        <a href="@Url.Action("DetalharEpisodio", new { id = e.EpisodioId })">@e.Titulo</a>
+                    </td>
+                    <td>@e.SerieTitulo</td>
                     <td>@e.Temporada</td>
                     <td>@e.Numero</td>
                     <td>@e.DataLancamento.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a href="@Url.Action("DetalharEpisodio", new { id = e.EpisodioId })" class="btn btn-sm btn-info">Ver Detalhes</a>
+                    </td>
                 </tr>
             }
         </tbody>

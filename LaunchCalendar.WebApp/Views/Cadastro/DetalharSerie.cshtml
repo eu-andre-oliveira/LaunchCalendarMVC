@@ -27,11 +27,11 @@
                 {
                     var hasImage = !string.IsNullOrWhiteSpace(ep.ImagemExibicao);
                     <div class="col-12">
-                        <div class="item-card @(hasImage ? "" : "no-image")">
+                        <a href="@Url.Action("DetalharEpisodio", new { id = ep.EpisodioId })" class="item-card @(hasImage ? "" : "no-image")" style="text-decoration: none; color: inherit; display: flex; cursor: pointer;">
                             <div class="item-card-body">
                                 <div class="time">@ep.DataLancamento.ToString("dd/MM/yyyy HH:mm")</div>
                                 <div class="title">@ep.Titulo</div>
-                                <div class="subtitle">Temporada @ep.Temporada • Ep. @ep.Numero</div>
+                                <div class="subtitle">Temporada @ep.Temporada · Ep. @ep.Numero</div>
                             </div>
                             @if (hasImage)
                             {
@@ -39,7 +39,7 @@
                                     <img src="@ep.ImagemExibicao" alt="@ep.Titulo" />
                                 </div>
                             }
-                        </div>
+                        </a>
                     </div>
                 }
             </div>

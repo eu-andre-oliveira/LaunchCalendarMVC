@@ -178,5 +178,14 @@ namespace LaunchCalendar.WebApp.Controllers
 
             return View(detalhe);
         }
+
+        [HttpGet]
+        public IActionResult DetalharEpisodio(int id)
+        {
+            var episodio = _episodiosQuery.ObterPorId(id);
+            if (episodio == null) return NotFound();
+
+            return View(episodio);
+        }
     }
 }

@@ -3,5 +3,6 @@
     public interface IEpisodiosQuery
     {
         IEnumerable<EpisodiosQueryOutput> ListarComFiltro(EpisodiosFilterInput filter);
+        EpisodiosQueryOutput? ObterPorId(int id);
     }
 }

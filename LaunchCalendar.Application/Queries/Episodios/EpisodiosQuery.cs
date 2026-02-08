@@ -57,5 +57,26 @@ namespace LaunchCalendar.Application.Queries.Episodios
                 })
                 .ToList();
         }
+
+        public EpisodiosQueryOutput? ObterPorId(int id)
+        {
+            var episodio = _episodioRepository.GetById(id);
+            
+            if (episodio == null)
+                return null;
+
+            return new EpisodiosQueryOutput
+            {
+                EpisodioId = episodio.EpisodioId,
+                Titulo = episodio.Titulo,
+                Descricao = episodio.Descricao,
+                Numero = episodio.Numero,
+                Temporada = episodio.Temporada,
+                SerieId = episodio.SerieId,
+                SerieTitulo = episodio.Serie?.Titulo,
+                ImagemExibicao = episodio.ImagemExibicao,
+                DataLancamento = episodio.DataLancamento
+            };
+        }
     }
 }
